@@ -1,0 +1,6 @@
+PrettyDate - Drupal Module
+
+This module was meant for Drupal 7.x and makes use of the Features module.
+It adds a formatter using a strongarm (theres probably a better way). 
+
+It makes use of John Resig's Prettydate formatter but is modified so it works on dates older than 2 weeks old. 

@@ -1,0 +1,8 @@
+<?php
+/**
+ * @file
+ * Code for the prettydate feature.
+ */
+
+include_once('prettydate.features.inc');
+

@@ -1,0 +1,11 @@
+core = "7.x"
+dependencies[] = "date"
+dependencies[] = "strongarm"
+features[ctools][] = "strongarm:strongarm:1"
+features[variable][] = "date_format_iso"
+features[variable][] = "date_format_pretty_date"
+name = "PrettyDate"
+package = "Features"
+php = "5.2.4"
+project = "prettydate"
+scripts[] = js/prettydate.js
