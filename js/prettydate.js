@@ -12,7 +12,7 @@ function prettyDate(time){
 		diff = (((new Date()).getTime() - date.getTime()) / 1000),
 		day_diff = Math.floor(diff / 86400);
 			
-	if ( isNaN(day_diff) || day_diff < 0 || day_diff >= 31 )
+	if ( isNaN(day_diff) || day_diff < 0 )
 		return;
 	
   var monthNames = [ "January", "February", "March", "April", "May", "June",

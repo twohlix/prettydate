@@ -4,5 +4,59 @@
  * Code for the prettydate feature.
  */
 
-include_once('prettydate.features.inc');
 
+function prettydate_setup_date($dates){
+  //take the date field and render it into pseudo-iso format required by the JS
+  $ret = array();  
+
+  foreach($dates as $date_num => $date){
+    $curtime = strtotime($date['value']);
+    if($curtime === FALSE){ continue; }
+    
+    //convert the date to a pretty date format
+    $js_iso = date('Y-m-d\TH:i:s\Z', $curtime);
+    $default_date = date('F j, Y', $curtime);
+    
+    $ret[$date_num] = '<a title="'.$js_iso.'" class="prettydate">'.$default_date.'</a>';
+  }
+
+  return $ret;
+
+}
+
+/**
+ * hook_field_formatter_info()
+ */
+function prettydate_field_formatter_info(){
+  $formatters = array();
+
+  $formatters['prettydate_default'] = array(
+    'label' => t('PrettyDate'),
+    'description' => t('Displays a date in a more understandable way: x seconds ago, x hours ago, etc...'),
+    'field types' => array(
+       'datetime', 'datestamp', 'date',
+    ),
+  );
+
+  return $formatters;
+}
+
+/**
+ * hook_field_formatter_view()
+ */
+function prettydate_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display){
+  $elements = array();
+
+  //check on the display type and render accordingly
+  switch( $display['type'] ){
+    case 'prettydate_default':
+      $formatted_dates = prettydate_setup_date($items);
+      foreach( $formatted_dates as $delta => $item ){
+         $elements[$delta] = array('#markup' => $item);
+      }
+      break;
+  }
+
+  return $elements;
+
+}
