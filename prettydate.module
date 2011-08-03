@@ -4,20 +4,37 @@
  * Code for the prettydate feature.
  */
 
-
 function prettydate_setup_date($dates){
   //take the date field and render it into pseudo-iso format required by the JS
   $ret = array();  
 
   foreach($dates as $date_num => $date){
+    //get first date
     $curtime = strtotime($date['value']);
     if($curtime === FALSE){ continue; }
     
+    //check on second date
+    $totime = null;
+    if(isset($date['value2'])){
+      if( strcmp($date['value2'], $date['value']) != 0 ){
+        $totime = strtotime($date['value2']);
+      }
+    }    
+
+
     //convert the date to a pretty date format
     $js_iso = date('Y-m-d\TH:i:s\Z', $curtime);
     $default_date = date('F j, Y', $curtime);
+   
+    $ret[$date_num] = '<a title="'.$js_iso.'" class="prettydate start-date">'.$default_date.'</a>';
+ 
+    //convert second date
+    if($totime != null){
+      $js_iso_2 = date('Y-m-d\TH:i:s\Z', $totime);
+      $default_2 = date('F j, Y', $totime);
     
-    $ret[$date_num] = '<a title="'.$js_iso.'" class="prettydate">'.$default_date.'</a>';
+      $ret[$date_num] .= ' <a title="'.$js_iso_2.'" class="prettydate end-date">'.$default_2.'</a>';
+    }
   }
 
   return $ret;
