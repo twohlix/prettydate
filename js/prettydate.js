@@ -24,8 +24,7 @@ function prettyDate(time){
 			diff < 3600 && Math.floor( diff / 60 ) + " minutes ago" ||
 			diff < 7200 && "1 hour ago" ||
 			diff < 86400 && Math.floor( diff / 3600 ) + " hours ago") ||
-		day_diff == 1 && "Yesterday" ||
-		day_diff > 1 && monthNames[date.getMonth()] + " " + date.getDate() + ", " + date.getFullYear();
+		day_diff == 1 && "Yesterday"; 
 	
 }
 

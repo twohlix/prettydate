@@ -4,9 +4,21 @@
  * Code for the prettydate feature.
  */
 
-function prettydate_setup_date($dates){
+/**
+ * This is the function that takes an array of dates and returns the prettydate formatted
+ *
+ */
+function prettydate_setup_date($dates, $subformat = ''){
   //take the date field and render it into pseudo-iso format required by the JS
   $ret = array();  
+
+  //setup subformatter
+  if($subformat == null || $subformat == ''){
+    $sub_date_setup = 'F j, Y';
+  }else{
+    //grab the date format and get ready to use it
+    $sub_date_setup = $subformat;
+ }
 
   foreach($dates as $date_num => $date){
     //get first date
@@ -24,20 +36,51 @@ function prettydate_setup_date($dates){
 
     //convert the date to a pretty date format
     $js_iso = date('Y-m-d\TH:i:s\Z', $curtime);
-    $default_date = date('F j, Y', $curtime);
+    $default_date = date($sub_date_setup, $curtime);
    
     $ret[$date_num] = '<a title="'.$js_iso.'" class="prettydate start-date">'.$default_date.'</a>';
  
     //convert second date
     if($totime != null){
       $js_iso_2 = date('Y-m-d\TH:i:s\Z', $totime);
-      $default_2 = date('F j, Y', $totime);
+      $default_2 = date($sub_date_setup, $totime);
     
       $ret[$date_num] .= ' <a title="'.$js_iso_2.'" class="prettydate end-date">'.$default_2.'</a>';
     }
   }
 
   return $ret;
+
+}
+
+/**
+ * Return an array of date formatters for the default display
+ * 
+ * PrettyDate format should DEFINITELY be removed here as to prevent recursion.
+ */
+function prettydate_format_options($include_empty = TRUE){
+  $formats = _system_date_format_types_build();
+  $options = array();
+
+  if( $include_empty && !empty($styles)){
+    $options[''] = t('<none>');
+  }
+  
+  foreach( $formats as $mname => $vals ){
+    $options[$mname] = $vals['title'];
+  }
+
+  if( empty($options) ){
+    $options[''] = t('No Defined Formats');
+  }
+
+  //remove PrettyDate formatters to prevent recursive lols
+  //There has to be a better way to get all the prettydates TODO
+  if( isset($options['prettydate_default']) ){
+    unset($options['prettydate_default']);
+  }
+
+  return $options;
 
 }
 
@@ -53,9 +96,58 @@ function prettydate_field_formatter_info(){
     'field types' => array(
        'datetime', 'datestamp', 'date',
     ),
+    'settings' => array(
+      'display_format' => '',
+    ),
   );
 
   return $formatters;
+}
+
+/**
+ * hook_field_formatter_settings_form()
+ *
+ * This handles choosing a date formatter as the default display for when the JS cannot format the date
+ */
+function prettydate_field_formatter_settings_form($field, $instance, $view_mode, $form, &$form_state){
+  $ret = array();
+  
+  $display = $instance['display'][$view_mode];
+  $settings = $display['settings'];
+  $options = prettydate_format_options(FALSE);
+
+  $ret['display_format'] = array(
+    '#title' => t('Default display format'),
+    '#type' => 'select',
+    '$default_value' => '', //why can i not set this $settings['display_format'] ??
+    '#options' => $options,
+  );
+
+  return $ret;
+}
+
+function prettydate_field_formatter_settings_summary($field, $instance, $view_mode){
+  //get the display 
+  $display = $instance['display'][$view_mode];
+  
+  //no sense returning a summary on someone else's formatter
+  if($display['type'] == 'prettydate_default'){
+    $settings = $display['settings']; 
+
+    //create the string to return
+    //without a string we are not configurable
+    $theRet = "<strong>SubFormatter:</strong> ";
+    
+    $format = $settings['display_format'];
+    if($format == null || $format == ''){
+      $theRet .= 'none';
+    }else{
+      //get the title from the machine name here TODO  
+      $theRet .= $format;
+    }
+    
+    return $theRet;
+  }
 }
 
 /**
@@ -67,7 +159,11 @@ function prettydate_field_formatter_view($entity_type, $entity, $field, $instanc
   //check on the display type and render accordingly
   switch( $display['type'] ){
     case 'prettydate_default':
-      $formatted_dates = prettydate_setup_date($items);
+      //get subformat
+      $subformatter = $display['settings']['display_format'];      
+      $subformat = date_formatter_format('date_default', array('format_type' => $subformatter), date_granularity($field), $langcode);
+
+      $formatted_dates = prettydate_setup_date($items, $subformat);
       foreach( $formatted_dates as $delta => $item ){
          $elements[$delta] = array('#markup' => $item);
       }
