@@ -5,11 +5,16 @@
  */
 
 /**
- * This is the function that takes an array of dates and returns the prettydate formatted
+ * Take the date field and render it into pseudo-iso format required by the JS
+ *
+ * @param array $dates An array of dates that are to be converted
+ * @param string $subformat Optional name of the subformat this library will output if JS is disabled
+ *
+ * @return array Prettydate formatted dates
  *
  */
 function prettydate_setup_date($dates, $subformat = ''){
-  //take the date field and render it into pseudo-iso format required by the JS
+  
   $ret = array();  
 
   //setup subformatter
@@ -119,7 +124,7 @@ function prettydate_field_formatter_settings_form($field, $instance, $view_mode,
   $ret['display_format'] = array(
     '#title' => t('Default display format'),
     '#type' => 'select',
-    '$default_value' => '', //why can i not set this $settings['display_format'] ??
+    '#default_value' => $settings['display_format'],
     '#options' => $options,
   );
 
