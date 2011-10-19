@@ -1,7 +1,7 @@
 /*
  * JavaScript Pretty Date
  * Copyright (c) 2008 John Resig (jquery.com)
- * Licensed under the MIT license.
+ * Licensed under the MIT and GPL licenses.
  * Modified 2011 Charles Smith (phase2technology.com)
  */
 
