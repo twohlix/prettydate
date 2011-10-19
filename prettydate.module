@@ -20,7 +20,8 @@ function prettydate_setup_date($dates, $subformat = '') {
   //setup subformatter
   if ($subformat == NULL || $subformat == '') {
     $sub_date_setup = 'F j, Y';
-  }else{
+  }
+  else{
     //grab the date format and get ready to use it
     $sub_date_setup = $subformat;
  }
@@ -90,7 +91,7 @@ function prettydate_format_options($include_empty = TRUE) {
 }
 
 /**
- * hook_field_formatter_info()
+ * Implements hook_field_formatter_info()
  */
 function prettydate_field_formatter_info() {
   $formatters = array();
@@ -110,7 +111,7 @@ function prettydate_field_formatter_info() {
 }
 
 /**
- * hook_field_formatter_settings_form()
+ * Implements hook_field_formatter_settings_form()
  *
  * This handles choosing a date formatter as the default display for when the JS cannot format the date
  */
@@ -131,6 +132,9 @@ function prettydate_field_formatter_settings_form($field, $instance, $view_mode,
   return $ret;
 }
 
+/**
+ * Implements hook_field_formatter_settings_summary()
+ */
 function prettydate_field_formatter_settings_summary($field, $instance, $view_mode) {
   //get the display 
   $display = $instance['display'][$view_mode];
@@ -146,7 +150,8 @@ function prettydate_field_formatter_settings_summary($field, $instance, $view_mo
     $format = $settings['display_format'];
     if ($format == NULL || $format == '') {
       $theRet .= 'none';
-    }else{
+    }
+    else{
       //get the title from the machine name here TODO  
       $theRet .= $format;
     }
@@ -156,7 +161,7 @@ function prettydate_field_formatter_settings_summary($field, $instance, $view_mo
 }
 
 /**
- * hook_field_formatter_view()
+ * Implements hook_field_formatter_view()
  */
 function prettydate_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
   $elements = array();

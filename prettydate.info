@@ -2,5 +2,5 @@ core = "7.x"
 dependencies[] = "date"
 name = "PrettyDate"
 php = "5.2.4"
-project = "prettydate"
+package = "Date/Time"
 scripts[] = js/prettydate.js
