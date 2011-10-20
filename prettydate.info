@@ -3,4 +3,3 @@ dependencies[] = "date"
 name = "PrettyDate"
 php = "5.2.4"
 package = "Date/Time"
-scripts[] = js/prettydate.js
