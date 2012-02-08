@@ -25,7 +25,7 @@ function prettydate_setup_date($dates, $subformat = '') {
   if ($subformat == NULL || $subformat == '') {
     $sub_date_setup = 'F j, Y';
   }
-  else{
+  else {
     //Grab the date format and get ready to use it.
     $sub_date_setup = $subformat;
   }
@@ -163,7 +163,7 @@ function prettydate_field_formatter_settings_summary($field, $instance, $view_mo
     if ($format == NULL || $format == '') {
       $theRet .= 'none';
     }
-    else{
+    else {
       //Get the title from the machine name here. TODO
       $theRet .= $format;
     }
