@@ -33,7 +33,9 @@ function prettydate_setup_date($dates, $subformat = '') {
   foreach ($dates as $date_num => $date) {
     //Get first date.
     $curtime = strtotime($date['value']);
-    if ($curtime === FALSE) { continue; }
+    if ($curtime === FALSE) { 
+      continue; 
+    }
     
     //Check on second date.
     $totime = NULL;
@@ -189,7 +191,7 @@ function prettydate_field_formatter_view($entity_type, $entity, $field, $instanc
       }
       
       //Make sure we get the js that does all the magic onto the page.
-      drupal_add_js(drupal_get_path('module', 'prettydate') .'/js/prettydate.js', 'file');
+      drupal_add_js(drupal_get_path('module', 'prettydate') . '/js/prettydate.js', 'file');
       break;
   }
 
