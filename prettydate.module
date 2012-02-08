@@ -7,31 +7,35 @@
 /**
  * Take the date field and render it into pseudo-iso format required by the JS
  *
- * @param array $dates An array of dates that are to be converted
- * @param string $subformat Optional name of the subformat this library will output if JS is disabled
+ * @param $dates 
+ *   An array of dates that are to be converted
  *
- * @return array Prettydate formatted dates
+ * @param $subformat 
+ *   Optional name of the subformat this library will output if JS is disabled
+ *
+ * @return 
+ *   An array of Prettydate formatted dates
  *
  */
 function prettydate_setup_date($dates, $subformat = '') {
   
   $ret = array();  
 
-  //setup subformatter
+  //Setup subformatter.
   if ($subformat == NULL || $subformat == '') {
     $sub_date_setup = 'F j, Y';
   }
   else{
-    //grab the date format and get ready to use it
+    //Grab the date format and get ready to use it.
     $sub_date_setup = $subformat;
  }
 
   foreach ($dates as $date_num => $date) {
-    //get first date
+    //Get first date.
     $curtime = strtotime($date['value']);
     if ($curtime === FALSE) { continue; }
     
-    //check on second date
+    //Check on second date.
     $totime = NULL;
     if (isset($date['value2'])) {
       if ( strcmp($date['value2'], $date['value']) != 0 ) {
@@ -40,13 +44,13 @@ function prettydate_setup_date($dates, $subformat = '') {
     }    
 
 
-    //convert the date to a pretty date format
+    //Convert the date to a pretty date format.
     $js_iso = date('Y-m-d\TH:i:s\Z', $curtime);
     $default_date = date($sub_date_setup, $curtime);
    
     $ret[$date_num] = '<a title="' . $js_iso . '" class="prettydate start-date">' . $default_date . '</a>';
  
-    //convert second date
+    //Convert second date.
     if ($totime != NULL) {
       $js_iso_2 = date('Y-m-d\TH:i:s\Z', $totime);
       $default_2 = date($sub_date_setup, $totime);
@@ -63,6 +67,12 @@ function prettydate_setup_date($dates, $subformat = '') {
  * Return an array of date formatters for the default display
  * 
  * PrettyDate format should DEFINITELY be removed here as to prevent recursion.
+ *
+ * @param $include_empty
+ *   Optional TRUE/FALSE. Prunes empty formatters when FALSE
+ *
+ * @return
+ *   An array of date formatters
  */
 function prettydate_format_options($include_empty = TRUE) {
   $formats = _system_date_format_types_build();
@@ -80,8 +90,8 @@ function prettydate_format_options($include_empty = TRUE) {
     $options[''] = t('No Defined Formats');
   }
 
-  //remove PrettyDate formatters to prevent recursive lols
-  //There has to be a better way to get all the prettydates TODO
+  //Remove PrettyDate formatters to prevent recursive lols.
+  //There has to be a better way to get all the prettydates. TODO
   if ( isset($options['prettydate_default']) ) {
     unset($options['prettydate_default']);
   }
@@ -91,7 +101,7 @@ function prettydate_format_options($include_empty = TRUE) {
 }
 
 /**
- * Implements hook_field_formatter_info()
+ * Implements hook_field_formatter_info().
  */
 function prettydate_field_formatter_info() {
   $formatters = array();
@@ -111,7 +121,7 @@ function prettydate_field_formatter_info() {
 }
 
 /**
- * Implements hook_field_formatter_settings_form()
+ * Implements hook_field_formatter_settings_form().
  *
  * This handles choosing a date formatter as the default display for when the JS cannot format the date
  */
@@ -133,18 +143,18 @@ function prettydate_field_formatter_settings_form($field, $instance, $view_mode,
 }
 
 /**
- * Implements hook_field_formatter_settings_summary()
+ * Implements hook_field_formatter_settings_summary().
  */
 function prettydate_field_formatter_settings_summary($field, $instance, $view_mode) {
-  //get the display 
+  //Get the display.
   $display = $instance['display'][$view_mode];
   
-  //no sense returning a summary on someone else's formatter
+  //No sense returning a summary on someone else's formatter.
   if ($display['type'] == 'prettydate_default') {
     $settings = $display['settings']; 
 
-    //create the string to return
-    //without a string we are not configurable
+    //Create the string to return.
+    //Without a string we are not configurable.
     $theRet = "<strong>SubFormatter:</strong> ";
     
     $format = $settings['display_format'];
@@ -152,7 +162,7 @@ function prettydate_field_formatter_settings_summary($field, $instance, $view_mo
       $theRet .= 'none';
     }
     else{
-      //get the title from the machine name here TODO  
+      //Get the title from the machine name here. TODO  
       $theRet .= $format;
     }
     
@@ -161,15 +171,15 @@ function prettydate_field_formatter_settings_summary($field, $instance, $view_mo
 }
 
 /**
- * Implements hook_field_formatter_view()
+ * Implements hook_field_formatter_view().
  */
 function prettydate_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
   $elements = array();
 
-  //check on the display type and render accordingly
+  //Check on the display type and render accordingly.
   switch ( $display['type'] ) {
     case 'prettydate_default':
-      //get subformat
+      //Get subformat.
       $subformatter = $display['settings']['display_format'];      
       $subformat = date_formatter_format('date_default', array('format_type' => $subformatter), date_granularity($field), $langcode);
 
@@ -178,7 +188,7 @@ function prettydate_field_formatter_view($entity_type, $entity, $field, $instanc
          $elements[$delta] = array('#markup' => $item);
       }
       
-      //make sure we get the js that does all the magic onto the page
+      //Make sure we get the js that does all the magic onto the page.
       drupal_add_js(drupal_get_path('module', 'prettydate') .'/js/prettydate.js', 'file');
       break;
   }
