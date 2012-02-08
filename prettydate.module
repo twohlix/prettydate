@@ -7,19 +7,19 @@
 /**
  * Take the date field and render it into pseudo-iso format required by the JS
  *
- * @param $dates 
+ * @param $dates
  *   An array of dates that are to be converted
  *
- * @param $subformat 
+ * @param $subformat
  *   Optional name of the subformat this library will output if JS is disabled
  *
- * @return 
+ * @return
  *   An array of Prettydate formatted dates
  *
  */
 function prettydate_setup_date($dates, $subformat = '') {
-  
-  $ret = array();  
+
+  $ret = array();
 
   //Setup subformatter.
   if ($subformat == NULL || $subformat == '') {
@@ -28,35 +28,35 @@ function prettydate_setup_date($dates, $subformat = '') {
   else{
     //Grab the date format and get ready to use it.
     $sub_date_setup = $subformat;
- }
+  }
 
   foreach ($dates as $date_num => $date) {
     //Get first date.
     $curtime = strtotime($date['value']);
-    if ($curtime === FALSE) { 
-      continue; 
+    if ($curtime === FALSE) {
+      continue;
     }
-    
+
     //Check on second date.
     $totime = NULL;
     if (isset($date['value2'])) {
       if ( strcmp($date['value2'], $date['value']) != 0 ) {
         $totime = strtotime($date['value2']);
       }
-    }    
+    }
 
 
     //Convert the date to a pretty date format.
     $js_iso = date('Y-m-d\TH:i:s\Z', $curtime);
     $default_date = date($sub_date_setup, $curtime);
-   
+
     $ret[$date_num] = '<a title="' . $js_iso . '" class="prettydate start-date">' . $default_date . '</a>';
- 
+
     //Convert second date.
     if ($totime != NULL) {
       $js_iso_2 = date('Y-m-d\TH:i:s\Z', $totime);
       $default_2 = date($sub_date_setup, $totime);
-    
+
       $ret[$date_num] .= ' <a title="' . $js_iso_2 . '" class="prettydate end-date">' . $default_2 . '</a>';
     }
   }
@@ -67,7 +67,7 @@ function prettydate_setup_date($dates, $subformat = '') {
 
 /**
  * Return an array of date formatters for the default display
- * 
+ *
  * PrettyDate format should DEFINITELY be removed here as to prevent recursion.
  *
  * @param $include_empty
@@ -83,7 +83,7 @@ function prettydate_format_options($include_empty = TRUE) {
   if ($include_empty && !empty($styles)) {
     $options[''] = t('<none>');
   }
-  
+
   foreach ( $formats as $mname => $vals ) {
     $options[$mname] = $vals['title'];
   }
@@ -129,7 +129,7 @@ function prettydate_field_formatter_info() {
  */
 function prettydate_field_formatter_settings_form($field, $instance, $view_mode, $form, &$form_state) {
   $ret = array();
-  
+
   $display = $instance['display'][$view_mode];
   $settings = $display['settings'];
   $options = prettydate_format_options(FALSE);
@@ -150,24 +150,24 @@ function prettydate_field_formatter_settings_form($field, $instance, $view_mode,
 function prettydate_field_formatter_settings_summary($field, $instance, $view_mode) {
   //Get the display.
   $display = $instance['display'][$view_mode];
-  
+
   //No sense returning a summary on someone else's formatter.
   if ($display['type'] == 'prettydate_default') {
-    $settings = $display['settings']; 
+    $settings = $display['settings'];
 
     //Create the string to return.
     //Without a string we are not configurable.
     $theRet = "<strong>SubFormatter:</strong> ";
-    
+
     $format = $settings['display_format'];
     if ($format == NULL || $format == '') {
       $theRet .= 'none';
     }
     else{
-      //Get the title from the machine name here. TODO  
+      //Get the title from the machine name here. TODO
       $theRet .= $format;
     }
-    
+
     return $theRet;
   }
 }
@@ -182,14 +182,14 @@ function prettydate_field_formatter_view($entity_type, $entity, $field, $instanc
   switch ( $display['type'] ) {
     case 'prettydate_default':
       //Get subformat.
-      $subformatter = $display['settings']['display_format'];      
+      $subformatter = $display['settings']['display_format'];
       $subformat = date_formatter_format('date_default', array('format_type' => $subformatter), date_granularity($field), $langcode);
 
       $formatted_dates = prettydate_setup_date($items, $subformat);
       foreach ( $formatted_dates as $delta => $item ) {
-         $elements[$delta] = array('#markup' => $item);
+        $elements[$delta] = array('#markup' => $item);
       }
-      
+
       //Make sure we get the js that does all the magic onto the page.
       drupal_add_js(drupal_get_path('module', 'prettydate') . '/js/prettydate.js', 'file');
       break;
