@@ -40,7 +40,7 @@ function prettydate_setup_date($dates, $subformat = '') {
     //Check on second date.
     $totime = NULL;
     if (isset($date['value2'])) {
-      if ( strcmp($date['value2'], $date['value']) != 0 ) {
+      if (strcmp($date['value2'], $date['value']) != 0) {
         $totime = strtotime($date['value2']);
       }
     }
@@ -84,17 +84,17 @@ function prettydate_format_options($include_empty = TRUE) {
     $options[''] = t('<none>');
   }
 
-  foreach ( $formats as $mname => $vals ) {
+  foreach ($formats as $mname => $vals) {
     $options[$mname] = $vals['title'];
   }
 
-  if ( empty($options) ) {
+  if (empty($options)) {
     $options[''] = t('No Defined Formats');
   }
 
   //Remove PrettyDate formatters to prevent recursive lols.
   //There has to be a better way to get all the prettydates. TODO
-  if ( isset($options['prettydate_default']) ) {
+  if (isset($options['prettydate_default'])) {
     unset($options['prettydate_default']);
   }
 
